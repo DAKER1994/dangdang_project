@@ -23,6 +23,3 @@ def registlogic(request):
         return HttpResponse("验证码输入有误")
 
 
-
-def view2(request):
-    pass
