@@ -24,3 +24,5 @@ def registlogic(request):
 
 
 
+def view2(request):
+    pass
