@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <script>
+        function changeCode() {
+            var url ="{% url 'captcha:getcaptcha' %}?"+new Date().getTime();
+            img =document.getElementById("image_code");
+            img.src =url
+
+        }
+    </script>
+</head>
+<body>
+<form action="{% url 'captcha:registlogic' %}" method="post">
+    {% csrf_token %}
+    用户名 :<input type="text" name="username"><br>
+    密码: <input type="password" name="userpwd"><br>
+    <img src="{% url 'captcha:getcaptcha' %}" width="80px" id="image_code">
+    <input type="text" name="captcha">
+    <a href="javascript:void(0)" onclick="changeCode()">看不清楚,换一张</a>
+    <input type="file">
+    <br>
+    <input type="submit" value="注册">
+</form>
+
+</body>
+</html>
