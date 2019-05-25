@@ -96,9 +96,9 @@
                     </form>
       </div>
                   
-                  <div id="suggest_key" class="suggest_key" style="display:none;" ></div>
+                  <div id="suggest_key" class="suggest_key" style="display:inline;" ></div>
                   <div class="ddnew_cart"><a href="{% url 'xmapp:car' %}" name="购物车" dd_name="购物车"><i class="icon_card"></i>购物车<b id="cart_items_count"></b></a></div>
-                  <div class="ddnew_order"><a target="_blank" href="http://orderb.dangdang.com/myallorders.aspx" name="我的订单" dd_name="我的订单" rel="nofollow">我的订单<b id="unpaid_num" style="color:#ff2832;font:bold 12px Arial;"></b></a></div>
+                  <div class="ddnew_order"><a target="_blank" href="{% url 'xmapp:indent' %}" name="我的订单" dd_name="我的订单" rel="nofollow">我的订单<b id="unpaid_num" style="color:#ff2832;font:bold 12px Arial;"></b></a></div>
                 </div>
   </div>
               
