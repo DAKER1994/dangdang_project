@@ -406,11 +406,12 @@ def car(request):
         info = Cart()
     goods_info = info.cartitem
     total_price = info.total_price
+    save_price = info.save_price
     print(total_price)
     print(goods_info)
 
 
-    return render(request,'xmapp/car.html',{'total_price':total_price,'goods_info':goods_info,'info':info})
+    return render(request,'xmapp/car.html',{'total_price':total_price,'goods_info':goods_info,'info':info,'save_price':save_price})
 
     # site = TAddress.objects.all()[0:11]
     # print(site)

@@ -35,76 +35,100 @@
             }
         }
 
-        {#增加购买数量#}
-        $(function(){
-            $("[name=add_1]").click(function () {
-                var td1 =$(this).parent().parent().next();
-                var num = $(this).prev().val();
-                var bookid = $(this).parent().parent().find('input').val();
-                var p = parseFloat($(this).parent().parent().prev().find('input').val());
+        {##}
+        {#$(".amount fn-updatecount").click(function () {#}
+        {#    var num = $(this).next('a').text();#}
+        {#    num = parseInt(num);#}
+        {#    if (num >1){#}
+        {#        $(this).next('a').text(num-1);#}
+        {#    }#}
+        {#    else{#}
+        {#        alert('亲不能在少了')#}
+        {#    }#}
+        {#});#}
 
-                num++;
-                $(this).prev().val(num);
-                $(this).parent().parent().next().find("a").text(num*p);
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('get','{% url 'xmapp:car' %}?bookid='+bookid+'&amount='+num);
-                    xhr.setRequestHeader('conten-type',"application/x-www-form-urlencoded");
-                    xhr.setRequestHeader('X-CSRF-Token',"{{ csrf_token }}");
-                    xhr.send();
-                    xhr.onreadystatechange = function () {
-                        if(xhr.readyState==4 && xhr.status==200){
-                            var res = xhr.responseText;
-                            b = eval('('+res+')');
-                            $('[name = total]').text(b[1]);
-                            $('#totalFavor').text(b[0])
-                        }
+
+
+
+
+        {#增加购买数量#}
+        function add_book(id,amount,dd_price,total){
+            num = document.getElementById(id);
+            num.value = parseInt(num.value) + 1;
+            he = document.getElementById(id+'1');
+            he.innerText = '¥'+ ((parseInt(num.value))*parseInt(dd_price));
+            total = document.getElementById('total');
+            total1 = document.getElementById('payAmount');
+            save = document.getElementById('totalFavor');
+            {#total.innerText = '¥'+ (parseFloat(total)+ parseFloat(dang_price));#}
+            $.ajax({
+                type:"GET",
+                url:"{% url 'xmapp:car' %}",
+                data:"bookid="+id+"&amount=1",
+                success:function (msg) {
+                    result = msg['result'];
+                    result1 = msg['to'];
+                    result2 = msg['sa'];
+                    if (result === 1){
+                        total.innerText = '¥'+result1;
+                        total1.innerText = '¥'+result1;
+                        save.innerText = '¥'+result2
+
                     }
+
+                }
+
             });
 
-             $("[name='del_1']").click(function () {
-             var td1=$(this).parent().parent().next();
-                  //购买数量
-             var num= $(this).next().val();
-             var book_id=$(this).parent().parent().find('input').val();
-             var p=parseFloat($(this).parent().parent().prev().find('input').val());
+        }
 
-              if(num == 1 ){
-                 alert("购买数量最小为1");
-                  num=1
-              }else{
-                 num--;
-                  $(this).next().val(num);
-             $(this).parent().parent().next().find("a").text(num*p);
-                 var xhr=new XMLHttpRequest();
-                 xhr.open('get','{% url "xmapp:car" %}?book_id='+book_id+'&amount='+num);
-                 xhr.setRequestHeader('conten-type',"application/x-www-form-urlencoded");
-                 xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-                 xhr.send();
-                 xhr.onreadystatechange=function () {
-                     if(xhr.readyState==4 && xhr.status==200){
-                         var res=xhr.responseText;
-                         b=eval('('+res+')');
-                         $('[name=total]').text(b[1]);
-                         $('#totalFavor').text(b[0])
+    function dec_book(id,amount,dd_price,total){
+        num = document.getElementById(id);
+        if (num.value > 1) {
+            num.value = parseInt(num.value) - 1;
+            he = document.getElementById(id+'1');
+            he.innerText = '¥'+ ((parseInt(num.value))*parseInt(dd_price));
+            total = document.getElementById('total');
+            total1 = document.getElementById('payAmount');
+            save = document.getElementById('totalFavor');
+            {#total.innerText = '¥'+ (parseFloat(total)+ parseFloat(dang_price));#}
 
-                     }
-                 }
-              }
-        })
-    });
+            $.ajax({
+                type:"GET",
+                url:"{% url 'xmapp:car' %}",
+                data:"bookid="+id+"&amount=0",
+                success:function (msg) {
+                    result = msg['result'];
+                    result1 = msg['to'];
+                    result2 = msg['sa'];
+                    if (result === 1){
+                        total.innerText = '¥'+result1;
+                        total1.innerText = '¥'+result1;
+                        save.innerText = '¥'+result2
 
-
-
-    function logoutcar() {
-         url ="{% url 'xmapp:logout' %}";
-                 $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: "csrfmiddlewaretoken=" + "{{ csrf_token }}",
-                    success: function (result) {
                     }
-                })
-            }
+
+                }
+
+            });
+        }
+
+
+    }
+
+
+
+
+    {#function logoutcar() {#}
+    {#     url ="{% url 'xmapp:logout' %}";#}
+    {#             $.ajax({#}
+    {#                type: "POST",#}
+    {#                url: url,#}
+    {#                data: "csrfmiddlewaretoken=" + "{{ csrf_token }}",#}
+    {#                success: function (result) {#}
+    {#                }#}
+    {#            })#}
+    {#        }#}
 
 
 
@@ -244,9 +268,9 @@
             <td class="row_img"> <a href="{% url 'xmapp:details' %}?id={{ i.bookid }}" target="_blank" dd_name="查看详情">
                 <img onmouseout="$(this).parent().next().hide()" onmouseover="$(this).parent().next().show()" src="{{ i.book.illustration }}" width="80" height="80"> </a>
                 <div style="display: none;" class="img_big"><a href="{% url 'xmapp:details' %}?id={{ i.bookid }}" dd_name="查看详情" target="_blank"><img src="http://img3x2.ddimg.cn/0/17/24147882-1_b.jpg"></a><span class="arrow"></span></div> </td>
-            <td class="row_name"> <div class="name"> <a href="{% url 'xmapp:details' %}?id={{ i.bookid }}" title="跟乐嘉学性格色彩2（乐嘉2017年全新力作）" target="_blank" dd_name="查看详情" style="word-break:break-all;  word-wrap:break-word;">{{ i.book.bookname }}</a></div>      </td>
-            <td class="row3"><span>¥{{ i.book.dd_pricing }}</span></td> <td data-minbuy="0" class="fn-count-tip row3 "><span class="amount fn-updatecount " data-value="1"><a dd_name="减少数量" name="del_1" href="javascript:void(0)">-</a><input data-value="1" value={{ i.amount }} type="text"><a dd_name="增加数量" name="add_1" href="javascript:void(0)">+</a></span></td>
-            <td class="row4"><span class="red">¥{{ i.1 | floatformat:2 }}</span></td> <td class="row5 ">
+            <td class="row_name"> <div class="name"> <a href="{% url 'xmapp:details' %}?id={{ i.book.id }}" title="跟乐嘉学性格色彩2（乐嘉2017年全新力作）" target="_blank" dd_name="查看详情" style="word-break:break-all;  word-wrap:break-word;">{{ i.book.bookname }}</a></div>      </td>
+            <td class="row3"><span>¥{{ i.book.dd_pricing }}</span></td> <td data-minbuy="0" class="fn-count-tip row3 "><span class="amount fn-updatecount " data-value="1"><a dd_name="减少数量" name="del_1" href="javascript:void(0)" onclick="dec_book()" id="del_1">-</a><input data-value="1" value={{ i.amount }} type="text"><a dd_name="增加数量" name="add_1" id ="add_1"  href="javascript:void(0)" onclick="add_book()">+</a></span></td>
+            <td class="row4"><span class="red">¥{% widthratio i.book.dd_pricing   1   i.amount %}</span></td> <td class="row5 ">
             <span><a href="javascript:void(0)" data-item="424893864" class="fn-add-wish" dd_name="加入收藏按钮">移入收藏</a></span>
             <span><a href="javascript:void(0)" data-item="424893864" class="fn-remove-product" dd_name="删除普通品" onclick="del_book_info({{ i.book.id }})">删除</a></span></td> </tr></tbody>
         {% endfor %}
